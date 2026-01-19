@@ -1,0 +1,32 @@
+{% extends "auth_base.html" %}
+
+{% block auth_title %}Create Account{% endblock %}
+{% block auth_subtitle %}Start your weather tracking journey{% endblock %}
+
+{% block auth_form %}
+<form method="POST" action="/register">
+    <div class="form-group">
+        <i class="fas fa-user-tag input-icon"></i>
+        <input type="text" name="name" class="form-control" required>
+        <label class="form-label">Full Name</label>
+    </div>
+
+    <div class="form-group">
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" name="username" class="form-control" required>
+        <label class="form-label">Username</label>
+    </div>
+
+    <div class="form-group">
+        <i class="fas fa-lock input-icon"></i>
+        <input type="password" name="password" class="form-control" required>
+        <label class="form-label">Password</label>
+    </div>
+
+    <button class="auth-btn mt-4">Create Account</button>
+</form>
+{% endblock %}
+
+{% block auth_footer %}
+<p>Already have an account? <a href="/login" class="auth-link">Sign in</a></p>
+{% endblock %}

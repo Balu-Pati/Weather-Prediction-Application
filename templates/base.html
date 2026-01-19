@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Weather Report{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --gradient-bg: linear-gradient(45deg, #1a1a2e, #16213e);
+        }
+
+        body {
+            background: var(--gradient-bg);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.25) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+
+        .btn-primary {
+            background: var(--secondary-color);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .flash-container {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 1050;
+            max-width: 300px;
+        }
+
+        .flash-message {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transform: translateX(110%);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .flash-message.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .auth-deco {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            pointer-events: none;
+            animation: float 20s infinite;
+            z-index: 0;
+        }
+
+        .auth-deco-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, #4a90e2, #6ab0f3);
+            top: 10%;
+            left: 5%;
+            border-radius: 30% 70% 70% 30%/30% 30% 70% 70%;
+        }
+
+        .auth-deco-2 {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(45deg, #6ab0f3, #4a90e2);
+            bottom: 10%;
+            right: 5%;
+            animation-duration: 25s;
+            border-radius: 60% 40% 30% 70%/60% 30% 70% 40%;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+            66% {
+                transform: translateY(20px) rotate(-5deg);
+            }
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    </style>
+</head>
+
+<body>
+    <div class="auth-deco auth-deco-1"></div>
+    <div class="auth-deco auth-deco-2"></div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/home">🌤 Weather</a>
+            <ul class="navbar-nav d-flex flex-row gap-3 ms-auto">
+                {% if current_user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container flex-grow-1 d-flex justify-content-center align-items-center">
+        {% block content %}{% endblock %}
+    </main>
+
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} flash-message d-flex align-items-center p-3 mb-3" role="alert">
+            <span class="flex-grow-1">{{ message }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.flash-message').forEach(message => {
+                setTimeout(() => message.classList.add('show'), 50);
+                setTimeout(() => message.remove(), 2000);
+            });
+        });
+    </script>
+</body>
+
+</html>
